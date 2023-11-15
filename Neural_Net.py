@@ -37,6 +37,11 @@ class SingleLayerNN:
         self.b = model_parameters.b
         self.train_params = training_parameters
 
+    # update training data
+    def update_training_params(self, new_images_train, new_labels_train):
+        self.train_params.images_train = new_images_train
+        self.train_params.labels_train = new_labels_train.flatten()
+
     # Softmax
     @staticmethod
     def softmax(z):
@@ -95,8 +100,8 @@ class SingleLayerNN:
             elif i < 100:
                 eval_frequency = 20
             else:
-                eval_frequency = 100
-            #eval_frequency = 100 # use for different batch_size
+                 eval_frequency = 100
+            #eval_frequency = 60 # use for different batch_size
             # Mini-batch Gradient Descent
             start_index = i * self.train_params.batch_size
             end_index = min(start_index + self.train_params.batch_size, total_samples)

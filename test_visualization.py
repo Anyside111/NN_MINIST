@@ -31,6 +31,12 @@ class TestVisualization:
         neural_network = sln.SingleLayerNN(self.model, self.training_params)
         epoch_accuracies = []
         for epoch in range(1, num_epochs + 1):
+            # Randomize training data
+            inds = np.random.permutation(self.training_params.images_train.shape[0])
+            shuffled_images_train = self.training_params.images_train[inds]
+            shuffled_labels_train = self.training_params.labels_train[inds]
+            neural_network.update_training_params(shuffled_images_train, shuffled_labels_train)
+
             print(f"Epoch {epoch}")
             neural_network.train_model(test_during_training=False) # won't evaluate during training
             test_acc = neural_network.test_model() # test per epoch
@@ -120,7 +126,14 @@ class TestVisualization:
             num_iterations = total_evaluations // batch_size
             num_epochs = total_evaluations//num_iterations
 
-            for _ in range(num_epochs):
+            for num in range(num_epochs):
+                # Randomize training data
+                inds = np.random.permutation(self.training_params.images_train.shape[0])
+                shuffled_images_train = self.training_params.images_train[inds]
+                shuffled_labels_train = self.training_params.labels_train[inds]
+                neural_network.update_training_params(shuffled_images_train, shuffled_labels_train)
+
+                print(f"Epoch {num}")
                 test_acc = neural_network.train_model()
                 batch_accuracies.extend(test_acc)
 
@@ -179,6 +192,12 @@ class TestVisualization:
         neural_network = sln.MultiLayerNN(self.model, self.training_params)
         epoch_accuracies = []
         for epoch in range(1, num_epochs + 1):
+            # Randomize training data
+            inds = np.random.permutation(self.training_params.images_train.shape[0])
+            shuffled_images_train = self.training_params.images_train[inds]
+            shuffled_labels_train = self.training_params.labels_train[inds]
+            neural_network.update_training_params(shuffled_images_train, shuffled_labels_train)
+
             print(f"Epoch {epoch}")
             neural_network.train_model(test_during_training=False) # won't evaluate during training
             test_acc = neural_network.test_model() # test per epoch
@@ -210,11 +229,11 @@ if __name__ == "__main__":
     #tv.plot_accuracies_during_one_epoch()
     #tv.plot_accuracies_during_epochs(num_epochs=10)
 
-    #tv.test_different_batch_sizes(600)
+    tv.test_different_batch_sizes(1000)
     #tv.visualize_misclassified_images(model_parameters_file = "D:/github_projects/NN_MINIST/NN_MINISTmodel_parameters_one_epoch.npz")
     #tv.test_sorted_training_data()
     #tv.test_reduced_training_data()
-    tv.plot_accuracies_during_epochs_multi()
+    #tv.plot_accuracies_during_epochs_multi()
     #tv.plot_accuracies_during_one_epoch_multi()
 
 
