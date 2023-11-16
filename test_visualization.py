@@ -21,13 +21,13 @@ class TestVisualization:
         plt.title('Accuracy of the model of a single-layer neural network during one epoch')
         plt.xlabel('Evaluation Point')
         plt.ylabel('Accuracy')
-        plt.yticks(np.arange(0, 1.1, 0.1))
+        plt.yticks(np.arange(0, 1.1, 0.05))
         plt.legend()
         plt.show()
 
 
-    # Part 1-2: Plot the accuracies during 10 epochs training
-    def plot_accuracies_during_epochs(self, num_epochs=10):
+    # Part 1-2: Plot the accuracies during multi epochs training
+    def plot_accuracies_during_epochs(self, num_epochs=20):
         neural_network = sln.SingleLayerNN(self.model, self.training_params)
         epoch_accuracies = []
         for epoch in range(1, num_epochs + 1):
@@ -41,13 +41,15 @@ class TestVisualization:
             neural_network.train_model(test_during_training=False) # won't evaluate during training
             test_acc = neural_network.test_model() # test per epoch
             epoch_accuracies.append(test_acc)
-        np.savez('model_parameters_ten_epoch.npz', W=neural_network.W, b=neural_network.b)
+        np.savez('model_parameters_multi_epoch.npz', W=neural_network.W, b=neural_network.b)
         #print(f"Test Accuracy: {epoch_accuracies}")
-        plt.plot(range(1, num_epochs + 1), epoch_accuracies, label='Test Accuracy per Epoch')
+        x_vals = range(1, num_epochs + 1, 1)
+        plt.plot(x_vals, epoch_accuracies, label='Test Accuracy per Epoch')
         plt.title('Accuracy of the model of a single-layer neural network during epochs')
         plt.xlabel('Epoch')
         plt.ylabel('Accuracy')
-        plt.yticks(np.arange(0, 1.1, 0.1))
+        plt.xticks(x_vals)
+        plt.yticks(np.arange(0, 1.1, 0.05))
         plt.legend()
         plt.show()
 
@@ -109,7 +111,7 @@ class TestVisualization:
         plt.title('Accuracy of the model of a neural network with reduced training data')
         plt.xlabel('Iteration')
         plt.ylabel('Accuracy')
-        plt.yticks(np.arange(0, 1.1, 0.1))
+        plt.xticks(x_vals)
         plt.legend()
         plt.show()
 
@@ -146,7 +148,7 @@ class TestVisualization:
             plt.title('Accuracy of the model of a neural network with different batch sizes')
             plt.xlabel('Evaluation point')
             plt.ylabel('Accuracy')
-            plt.yticks(np.arange(0, 1.1, 0.1))
+            plt.yticks(np.arange(0, 1.1, 0.05))
             plt.legend()
             plt.show()
 
@@ -162,34 +164,33 @@ class TestVisualization:
         test_accuracies = neural_network.train_model()
         np.savez('model_parameters_sorted_data.npz', W=neural_network.W, b=neural_network.b)
 
-        plt.plot(test_accuracies, label='Test Accuracy on sorted training data')
         plt.title('Accuracy of the model of a neural network on sorted training data')
+        plt.plot(test_accuracies, label='Accuracy on sorted training data')
         plt.xlabel('Evaluation Point')
         plt.ylabel('Accuracy')
-        plt.yticks(np.arange(0, 1.1, 0.1))
         plt.legend()
         plt.show()
 
     # Part 6: Plot the accuracies of the model with one hidden layer
     # part 6-1: Plot the accuracies during one epoch training
-    def plot_accuracies_during_one_epoch_multi(self):
-        neural_network = sln.MultiLayerNN(self.model, self.training_params)
+    def plot_accuracies_during_one_epoch_hidden(self):
+        neural_network = sln.HiddenLayerNN(self.model, self.training_params)
         print("Epoch 1")
         test_accuracies = neural_network.train_model()
         print(test_accuracies)
         np.savez('model_parameters_add_hidden_layer.npz', W=neural_network.W, b=neural_network.b)
         plt.plot(test_accuracies, label='Test Accuracy during Training')
-        plt.title('Accuracy of the model of a Multi-layer neural network during one epoch')
+        plt.title('Accuracy of the model of a Hidden-layer neural network during one epoch')
         plt.xlabel('Evaluation Point')
         plt.ylabel('Accuracy')
-        plt.yticks(np.arange(0, 1.1, 0.1))
+        plt.yticks(np.arange(0, 1.1, 0.05))
         plt.legend()
         plt.show()
 
 
     # Part 6-2: Plot the accuracies during 10 epochs training
-    def plot_accuracies_during_epochs_multi(self, num_epochs=10):
-        neural_network = sln.MultiLayerNN(self.model, self.training_params)
+    def plot_accuracies_during_epochs_hidden(self, num_epochs=10):
+        neural_network = sln.HiddenLayerNN(self.model, self.training_params)
         epoch_accuracies = []
         for epoch in range(1, num_epochs + 1):
             # Randomize training data
@@ -206,10 +207,10 @@ class TestVisualization:
         np.savez('model_parameters_ten_epoch.npz', W=neural_network.W, b=neural_network.b)
         #print(f"Test Accuracy: {epoch_accuracies}")
         plt.plot(range(1, num_epochs + 1), epoch_accuracies, label='Test Accuracy per Epoch')
-        plt.title('Accuracy of the model of a Multi-layer neural network during epochs')
+        plt.title('Accuracy of the model of a Hidden-layer neural network during epochs')
         plt.xlabel('Epoch')
         plt.ylabel('Accuracy')
-        plt.yticks(np.arange(0, 1.1, 0.1))
+        plt.yticks(np.arange(0, 1.1, 0.05))
         plt.legend()
         plt.show()
 
@@ -219,21 +220,21 @@ class TestVisualization:
 if __name__ == "__main__":
 
     images_train, images_test, labels_train, labels_test = lp.images_train, lp.images_test, lp.labels_train, lp.labels_test
-    # images_train = images_train[0:1000, :] # for debug
+    # images_train = images_train[0:1000, :] # for debugging
     # labels_train = labels_train[0:1000, :]
     model_params = sln.ModelParameters(input_size=784, num_classes=10)
     train_params = sln.TrainingParameters(images_train, labels_train, images_test, labels_test, learning_rate=0.05, batch_size=10)
     tv = TestVisualization(model_params, train_params)
 
 
-    #tv.plot_accuracies_during_one_epoch()
-    #tv.plot_accuracies_during_epochs(num_epochs=10)
+    # tv.plot_accuracies_during_one_epoch()
+    #tv.plot_accuracies_during_epochs(num_epochs=20)
 
-    tv.test_different_batch_sizes(1000)
-    #tv.visualize_misclassified_images(model_parameters_file = "D:/github_projects/NN_MINIST/NN_MINISTmodel_parameters_one_epoch.npz")
-    #tv.test_sorted_training_data()
-    #tv.test_reduced_training_data()
-    #tv.plot_accuracies_during_epochs_multi()
-    #tv.plot_accuracies_during_one_epoch_multi()
+    # tv.test_different_batch_sizes(1000)
+    #tv.visualize_misclassified_images(model_parameters_file = "D:/github_projects/NN_MINIST/model_parameters_multi_epoch.npz")
+    # tv.test_sorted_training_data()
+    # tv.test_reduced_training_data()
+    # tv.plot_accuracies_during_epochs_hidden()
+    tv.plot_accuracies_during_one_epoch_hidden()
 
 

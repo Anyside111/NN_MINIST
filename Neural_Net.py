@@ -1,7 +1,4 @@
-from matplotlib import pyplot as plt
 import numpy as np
-
-import load_and_pre as lp
 
 
 # Part 1: Single-layer Neural Network
@@ -64,7 +61,6 @@ class SingleLayerNN:
         Z = np.dot(self.W, X) + self.b
         return self.softmax(Z)
 
-
     # backward propagation
     def backward_propagation(self, X, Y, E, m):
         dZ = E.copy()
@@ -101,7 +97,7 @@ class SingleLayerNN:
                 eval_frequency = 20
             else:
                  eval_frequency = 100
-            #eval_frequency = 60 # use for different batch_size
+            # eval_frequency = 60 # use for different batch_size
             # Mini-batch Gradient Descent
             start_index = i * self.train_params.batch_size
             end_index = min(start_index + self.train_params.batch_size, total_samples)
@@ -139,6 +135,7 @@ class SingleLayerNN:
         return test_acc
 
 
+    # Part 4: reduce the training data, batch_size = 1, estimate frequency = 1
     def train_model_reduced_data(self, num_evaluations=10):
         total_loss = 0
         test_accuracies = []
@@ -166,22 +163,22 @@ class SingleLayerNN:
             dW, db = self.backward_propagation(X_batch, Y_batch, E, m_batch)
             self.update_parameters(dW, db)
 
-            # Evaluate on test data for current model
+            # Evaluate on test data every iteration for current model
             test_predictions = self.predict(self.train_params.images_test.T)
             test_acc = np.mean(test_predictions == self.train_params.labels_test)
             test_accuracies.append(test_acc)
             avg_loss = total_loss / (i + 1)  # cumulative losses
             print(f"Iteration {i+1}: Average Loss = {avg_loss}, Test Accuracy = {test_acc}")
-            self.train_params.batch_size = original_batch_size
+
+        self.train_params.batch_size = original_batch_size # revert batch_size
 
         return test_accuracies
 
 
-
 # Part 6: add a hidden layer
-class MultiLayerNN(SingleLayerNN):
+class HiddenLayerNN(SingleLayerNN):
     def __init__(self, model_parameters, training_parameters, hidden_size=100):
-        super(MultiLayerNN, self).__init__(model_parameters, training_parameters)
+        super(HiddenLayerNN, self).__init__(model_parameters, training_parameters)
         self.hidden_size = hidden_size
         self.W1, self.b1, self.W2, self.b2 = self.initialize_parameters_with_hidden_layer(model_parameters)
 
