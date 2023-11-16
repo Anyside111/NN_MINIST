@@ -6,4 +6,3 @@ and plot the curve.
 4. Try different mini-batch sizes (1, 10, 100) for the original case and plot the results.
 5. Sort the data before training.
 6. Add a hidden layer with hidden neurons and ReLU activation function. 
-
